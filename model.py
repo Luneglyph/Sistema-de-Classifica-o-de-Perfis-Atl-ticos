@@ -86,11 +86,34 @@ class Model:
         usuarios_collection.delete_one({"_id": ObjectId(usuario_id)})
         print("usuario deletado!")
     
-    def get_dados_treino_para_grafico(self):
-        # retorna os dados de treino e seus clusters para plotar no grafico
-        dados = pd.read_csv('dados_treino.csv')
-        X = dados[['S. horizontal', 'abdominal', 'flexibilidade', 'arremessoMB', 'IMC']].values
-        X_padronizado = self.scaler.transform(X)
-        clusters = self.kmeans.predict(X_padronizado)
-        
-        return X, clusters
+    def get_dados_para_grafico(self):
+        # prepara todos os dados necessarios para o grafico
+    
+        # dados de treino
+            dados = pd.read_csv('dados_treino.csv')
+            X = dados[['S. horizontal', 'abdominal', 'flexibilidade', 'arremessoMB', 'IMC']].values
+            X_padronizado = self.scaler.transform(X)
+            clusters_treino = self.kmeans.predict(X_padronizado)
+    
+        # separa por cluster
+            dados_por_cluster = {}
+            for cluster in range(4):
+                saltos = []
+                abdominais = []
+                for i, c in enumerate(clusters_treino):
+                    if c == cluster:
+                        saltos.append(X[i][0])
+                        abdominais.append(X[i][1])
+                dados_por_cluster[cluster] = {'saltos': saltos, 'abdominais': abdominais}
+    
+        # usuarios cadastrados
+            usuarios = list(usuarios_collection.find())
+            usuarios_dados = []
+            for usuario in usuarios:
+                usuarios_dados.append({
+            'salto': usuario.get('salto_horizontal', 0),
+            'abdominal': usuario.get('abdominal', 0),
+            'cluster': usuario.get('cluster', 0)
+            })
+    
+            return dados_por_cluster, usuarios_dados
