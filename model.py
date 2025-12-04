@@ -11,10 +11,10 @@ from elo_04 import Elo_04
 class Model:
     def __init__(self):
         self.mapeamento_perfis = {
-            0: "Atletico",
-            1: "Força",
-            2: "Explosivo",
-            3: "Flexivel"
+            0: "Atletico", 
+            1: "Força", 
+            2: "Resistente", 
+            3: "Flexivel" 
         }
         self._treinar_modelo()
         self._montar_cadeia()
@@ -22,13 +22,13 @@ class Model:
     def _treinar_modelo(self):
         dados = pd.read_csv('dados_treino.csv')
         
-        X = dados[['S. horizontal', 'abdominal', 'flexibilidade', 'arremessoMB', 'IMC']].values
+        dados_reais = dados[['S. horizontal', 'abdominal', 'flexibilidade', 'arremessoMB', 'IMC']].values
         
         self.scaler = StandardScaler()
-        X_padronizado = self.scaler.fit_transform(X)
+        dados_padronizados = self.scaler.fit_transform(dados_reais)
         
         self.kmeans = KMeans(n_clusters=4, random_state=42, n_init=10)
-        self.kmeans.fit(X_padronizado)
+        self.kmeans.fit(dados_padronizados)
         print("kmeans treinado")
     
     def _montar_cadeia(self):
@@ -66,7 +66,6 @@ class Model:
             usuario.get('imc', 0)
         ]
         
-        # fecha o circulo
         valores = valores + valores[:1]
         
         # angulos
