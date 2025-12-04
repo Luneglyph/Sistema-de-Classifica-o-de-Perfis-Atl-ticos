@@ -1,6 +1,3 @@
-# elo_04.py
-# gera recomendacao de modalidade
-
 from elo import Elo
 
 class Elo_04(Elo):
@@ -16,7 +13,5 @@ class Elo_04(Elo):
     def proc(self, data):
         perfil = data['perfil']
         recomendacao = self.recomendacoes.get(perfil, "Atividade Geral")
-        
         data['recomendacao'] = recomendacao
-        
         return data

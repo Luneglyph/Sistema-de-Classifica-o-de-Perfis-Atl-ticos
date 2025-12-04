@@ -1,6 +1,3 @@
-# model.py
-# logica de negocios e processamento de dados
-
 import pandas as pd
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
@@ -13,28 +10,23 @@ from elo_04 import Elo_04
 
 class Model:
     def __init__(self):
-        # mapeamento cluster para perfil
         self.mapeamento_perfis = {
-            0: "Atlético",
+            0: "Atletico",
             1: "Força",
             2: "Explosivo",
-            3: "Flexível"
+            3: "Flexivel"
         }
         self._treinar_modelo()
         self._montar_cadeia()
     
     def _treinar_modelo(self):
-        # carrega os dados do csv
         dados = pd.read_csv('dados_treino.csv')
         
-        # separa os dados para o treino
         X = dados[['S. horizontal', 'abdominal', 'flexibilidade', 'arremessoMB', 'IMC']].values
         
-        # padroniza os dados
         self.scaler = StandardScaler()
         X_padronizado = self.scaler.fit_transform(X)
         
-        # treina kmeans
         self.kmeans = KMeans(n_clusters=4, random_state=42, n_init=10)
         self.kmeans.fit(X_padronizado)
         print("kmeans treinado")
@@ -62,3 +54,24 @@ class Model:
     def deletar_usuario(self, usuario_id):
         usuarios_collection.delete_one({"_id": ObjectId(usuario_id)})
         print("usuario deletado")
+    
+    def preparar_dados_radar(self, usuario):
+        categorias = ['Salto', 'Abd', 'Flex', 'Arr', 'IMC']
+        
+        valores = [
+            usuario.get('salto_horizontal', 0),
+            usuario.get('abdominal', 0),
+            usuario.get('flexibilidade', 0),
+            usuario.get('arremessoMB', 0),
+            usuario.get('imc', 0)
+        ]
+        
+        # fecha o circulo
+        valores = valores + valores[:1]
+        
+        # angulos
+        num_vars = len(categorias)
+        angles = [n / float(num_vars) * 2 * 3.14159 for n in range(num_vars)]
+        angles += angles[:1]
+        
+        return categorias, valores, angles

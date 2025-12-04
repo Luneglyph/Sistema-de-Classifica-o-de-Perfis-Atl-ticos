@@ -18,3 +18,6 @@ class Controller:
     
     def get_mapeamento_perfis(self):
         return self.model.mapeamento_perfis
+    
+    def get_dados_radar(self, usuario):
+        return self.model.preparar_dados_radar(usuario)

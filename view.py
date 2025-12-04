@@ -1,5 +1,3 @@
-# view.py
-
 import customtkinter as ctk
 from controller import Controller
 import matplotlib.pyplot as plt
@@ -19,7 +17,7 @@ class View:
         self.cor_cinza_claro = "#f0f0f0"
         
         self.criar_header()
-        
+
         self.container_principal = ctk.CTkFrame(self.root, fg_color=self.cor_branco)
         self.container_principal.pack(fill="both", expand=True, padx=0, pady=0)
         
@@ -69,7 +67,7 @@ class View:
         frame_tela = ctk.CTkFrame(self.container_principal, fg_color=self.cor_branco)
         frame_tela.pack(fill="both", expand=True, padx=40, pady=30)
         
-        label_titulo = ctk.CTkLabel(frame_tela, text="Cadastro de Usuário",
+        label_titulo = ctk.CTkLabel(frame_tela, text="Cadastro de usuario",
                                     font=("Arial", 24, "bold"), text_color="black")
         label_titulo.pack(anchor="w", pady=(0, 30))
         
@@ -81,7 +79,7 @@ class View:
         label_nome.grid(row=0, column=0, sticky="w", pady=(0, 5))
         
         self.entry_nome = ctk.CTkEntry(form_frame, width=400, height=35,
-                                       placeholder_text="Digite o nome completo")
+                                       placeholder_text="Digite seu nome completo")
         self.entry_nome.grid(row=1, column=0, columnspan=2, sticky="w", pady=(0, 20))
         
         label_peso = ctk.CTkLabel(form_frame, text="Peso (kg)",
@@ -120,7 +118,7 @@ class View:
                                  font=("Arial", 14), text_color="gray")
         label_abd.grid(row=6, column=0, sticky="w", pady=(0, 5), padx=(0, 20))
         
-        label_salto = ctk.CTkLabel(form_frame, text="Salto Horizontal (cm)",
+        label_salto = ctk.CTkLabel(form_frame, text="Salto horizontal (cm)",
                                    font=("Arial", 14), text_color="gray")
         label_salto.grid(row=6, column=1, sticky="w", pady=(0, 5))
         
@@ -132,7 +130,7 @@ class View:
                                         placeholder_text="Ex: 220")
         self.entry_salto.grid(row=7, column=1, sticky="w", pady=(0, 30))
         
-        btn_cadastrar = ctk.CTkButton(form_frame, text="Cadastrar Usuário",
+        btn_cadastrar = ctk.CTkButton(form_frame, text="Cadastrar usuario",
                                       command=self.processar_cadastro,
                                       fg_color=self.cor_verde,
                                       hover_color="#8bc53f",
@@ -178,7 +176,7 @@ class View:
         frame_tela = ctk.CTkFrame(self.container_principal, fg_color=self.cor_branco)
         frame_tela.pack(fill="both", expand=True, padx=40, pady=30)
         
-        label_titulo = ctk.CTkLabel(frame_tela, text="Usuários Cadastrados",
+        label_titulo = ctk.CTkLabel(frame_tela, text="Usuarios Cadastrados",
                                     font=("Arial", 24, "bold"), text_color="black")
         label_titulo.pack(anchor="w", pady=(0, 30))
         
@@ -189,7 +187,7 @@ class View:
         usuarios = self.controller.listar_usuarios()
         
         if not usuarios:
-            label_vazio = ctk.CTkLabel(scroll_frame, text="Nenhum usuário cadastrado ainda.",
+            label_vazio = ctk.CTkLabel(scroll_frame, text="Nenhum usuario cadastrado ainda.",
                                        font=("Arial", 14), text_color="gray")
             label_vazio.pack(pady=50)
         else:
@@ -241,7 +239,6 @@ class View:
     
     def mostrar_perfil_individual(self, usuario):
         self.limpar_container()
-        
         frame_tela = ctk.CTkFrame(self.container_principal, fg_color=self.cor_branco)
         frame_tela.pack(fill="both", expand=True, padx=40, pady=30)
         
@@ -303,7 +300,7 @@ class View:
         
         self.gerar_radar_chart(frame_radar, usuario)
         
-        frame_rec = ctk.CTkFrame(frame_tela, fg_color="#d4edda", corner_radius=10)
+        frame_rec = ctk.CTkFrame(frame_tela, fg_color="#68816e", corner_radius=10)
         frame_rec.pack(fill="x")
         
         recomendacao = usuario.get('recomendacao', 'Nenhuma')
@@ -314,46 +311,19 @@ class View:
         label_rec_texto = ctk.CTkLabel(frame_rec, text=recomendacao,
                                       font=("Arial", 14), text_color="#155724")
         label_rec_texto.pack(anchor="w", padx=15, pady=(0, 10))
-    
+
     def gerar_radar_chart(self, frame_pai, usuario):
-        categorias = ['Salto\nHorizontal', 'Abdominal', 'Flexibilidade', 
-                      'Arremesso\nMB', 'IMC']
-        
-        valores = [
-            usuario.get('salto_horizontal', 0),
-            usuario.get('abdominal', 0),
-            usuario.get('flexibilidade', 0),
-            usuario.get('arremessoMB', 0),
-            usuario.get('imc', 0)
-        ]
-        
-        # normaliza valores entre 0 e 1
-        max_valores = [200, 60, 70, 7, 40]
-        valores_norm = [min(v / m, 1.0) for v, m in zip(valores, max_valores)]
-        
-        num_vars = len(categorias)
-        angles = np.linspace(0, 2 * np.pi, num_vars, endpoint=False).tolist()
-        
-        valores_norm += valores_norm[:1]
-        angles += angles[:1]
-        
+        categorias, valores, angles = self.controller.get_dados_radar(usuario)
+
         fig, ax = plt.subplots(figsize=(5, 4), subplot_kw=dict(projection='polar'))
-        
-        ax.plot(angles, valores_norm, 'o-', linewidth=2, color='#27ae60')
-        ax.fill(angles, valores_norm, alpha=0.25, color='#27ae60')
-        
+        ax.plot(angles, valores, 'o-', linewidth=2, color='#27ae60')
+        ax.fill(angles, valores, alpha=0.25, color='#27ae60')
         ax.set_xticks(angles[:-1])
-        ax.set_xticklabels(categorias, size=9)
-        
-        ax.set_ylim(0, 1)
-        ax.set_yticks([0.25, 0.5, 0.75, 1.0])
-        ax.set_yticklabels(['25%', '50%', '75%', '100%'], size=8)
-        
-        ax.grid(True)
+        ax.set_xticklabels(categorias)
         
         canvas = FigureCanvasTkAgg(fig, master=frame_pai)
         canvas.draw()
-        canvas.get_tk_widget().pack(fill="both", expand=True, padx=10, pady=10)
+        canvas.get_tk_widget().pack(fill="both", expand=True)
     
     def deletar_usuario(self, usuario_id):
         self.controller.deletar_usuario(usuario_id)
