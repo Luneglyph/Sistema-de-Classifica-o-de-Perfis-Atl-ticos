@@ -2,11 +2,11 @@ import pandas as pd
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 from bson.objectid import ObjectId
-from db import usuarios_collection
 from elo_01 import Elo_01
 from elo_02 import Elo_02
 from elo_03 import Elo_03
 from elo_04 import Elo_04
+from db import usuarios_collection
 
 class Model:
     def __init__(self):
@@ -16,21 +16,18 @@ class Model:
             2: "Resistente", 
             3: "Flexivel" 
         }
-        self._treinar_modelo()
-        self._montar_cadeia()
+        self.treinar_kmeans()
+        self.montar_cadeia()
     
-    def _treinar_modelo(self):
+    def treinar_kmeans(self):
         dados = pd.read_csv('dados_treino.csv')
-        
         dados_reais = dados[['S. horizontal', 'abdominal', 'flexibilidade', 'arremessoMB', 'IMC']].values
-        
         self.scaler = StandardScaler()
         dados_padronizados = self.scaler.fit_transform(dados_reais)
-        
         self.kmeans = KMeans(n_clusters=4, random_state=42, n_init=10)
         self.kmeans.fit(dados_padronizados)
     
-    def _montar_cadeia(self):
+    def montar_cadeia(self):
         elo1 = Elo_01()
         elo2 = Elo_02(self.kmeans, self.scaler)
         elo3 = Elo_03(self.mapeamento_perfis)
@@ -53,8 +50,7 @@ class Model:
         usuarios_collection.delete_one({"_id": ObjectId(usuario_id)})
     
     def preparar_dados_radar(self, usuario):
-        categorias = ['Salto', 'Abd', 'Flex', 'Arr', 'IMC']
-        
+        categorias = ['Salto', 'Abd', 'Flex', 'Arr', 'IMC'] 
         valores = [
             usuario.get('salto_horizontal', 0),
             usuario.get('abdominal', 0),
@@ -62,11 +58,14 @@ class Model:
             usuario.get('arremessoMB', 0),
             usuario.get('imc', 0)
         ]
-        
         valores = valores + valores[:1]
-        
         num_vars = len(categorias)
-        angles = [n / float(num_vars) * 2 * 3.14159 for n in range(num_vars)]
-        angles += angles[:1]
+        angles = []
+        num_vars = len(categorias)
         
+        for n in range(num_vars):
+            angulo = (n / float(num_vars)) * 2 * 3.14159
+            angles.append(angulo)
+
+        angles += angles[:1]
         return categorias, valores, angles
