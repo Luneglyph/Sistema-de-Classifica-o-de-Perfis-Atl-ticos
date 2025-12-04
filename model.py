@@ -29,7 +29,6 @@ class Model:
         
         self.kmeans = KMeans(n_clusters=4, random_state=42, n_init=10)
         self.kmeans.fit(dados_padronizados)
-        print("kmeans treinado")
     
     def _montar_cadeia(self):
         elo1 = Elo_01()
@@ -44,7 +43,6 @@ class Model:
     def cadastrar_usuario(self, dados_usuario):
         resultado = self.primeiro_elo.run(dados_usuario)
         usuarios_collection.insert_one(resultado)  
-        print("usuario cadastrado")
         return resultado
     
     def buscar_todos_usuarios(self):
@@ -53,7 +51,6 @@ class Model:
     
     def deletar_usuario(self, usuario_id):
         usuarios_collection.delete_one({"_id": ObjectId(usuario_id)})
-        print("usuario deletado")
     
     def preparar_dados_radar(self, usuario):
         categorias = ['Salto', 'Abd', 'Flex', 'Arr', 'IMC']
@@ -68,7 +65,6 @@ class Model:
         
         valores = valores + valores[:1]
         
-        # angulos
         num_vars = len(categorias)
         angles = [n / float(num_vars) * 2 * 3.14159 for n in range(num_vars)]
         angles += angles[:1]
