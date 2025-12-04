@@ -58,6 +58,7 @@ class Model:
             usuario.get('arremessoMB', 0),
             usuario.get('imc', 0)
         ]
+        
         valores = valores + valores[:1]
         num_vars = len(categorias)
         angles = []

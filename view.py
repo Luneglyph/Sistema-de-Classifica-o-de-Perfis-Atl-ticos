@@ -315,11 +315,13 @@ class View:
     def gerar_radar_chart(self, frame_pai, usuario):
         categorias, valores, angles = self.controller.get_dados_radar(usuario)
 
+        # plotagem do grafico
         fig, ax = plt.subplots(
             figsize=(5, 4), 
             subplot_kw=dict(projection='polar')
         )
         
+        # linha
         ax.plot(
             angles, 
             valores, 
@@ -329,18 +331,18 @@ class View:
             color=self.cor_verde
         )
         
+        # preenchimento
         ax.fill(
             angles, 
             valores, 
             alpha=0.25,
             color=self.cor_verde
         )
-        
-        # nomes
+        # etiquetas
         ax.set_xticks(angles[:-1])
         ax.set_xticklabels(categorias)
         ax.set_ylim(0, max(valores) * 1.2) 
-        
+    
         canvas = FigureCanvasTkAgg(fig, master=frame_pai)
         canvas.draw()
         canvas.get_tk_widget().pack(fill="both", expand=True)
