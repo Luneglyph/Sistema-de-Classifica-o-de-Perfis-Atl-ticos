@@ -1,7 +1,3 @@
-# elo.py
-# classe base abstrata para a cadeia de responsabilidade
-# todos os elos herdam desta classe
-
 from abc import ABC, abstractmethod
 
 class Elo(ABC):
@@ -15,7 +11,6 @@ class Elo(ABC):
     @abstractmethod
     def proc(self, data):
         # metodo abstrato que cada elo deve implementar
-        # cada elo vai processar os dados de uma forma especifica
         pass
     
     def run(self, data):
