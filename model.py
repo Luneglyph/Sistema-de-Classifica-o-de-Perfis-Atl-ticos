@@ -1,12 +1,12 @@
 import pandas as pd
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
-from bson.objectid import ObjectId
+from bson.objectid import *
 from elo_01 import Elo_01
 from elo_02 import Elo_02
 from elo_03 import Elo_03
 from elo_04 import Elo_04
-from db import usuarios_collection
+from db import *
 
 class Model:
     def __init__(self):
@@ -62,7 +62,6 @@ class Model:
         valores = valores + valores[:1]
         num_vars = len(categorias)
         angles = []
-        num_vars = len(categorias)
         
         for n in range(num_vars):
             angulo = (n / float(num_vars)) * 2 * 3.14159
