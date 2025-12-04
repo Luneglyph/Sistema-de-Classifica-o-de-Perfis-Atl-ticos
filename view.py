@@ -9,18 +9,13 @@ class View:
         self.root = ctk.CTk()
         self.root.title("FitCluster")
         self.root.geometry("520x660")
-        
         self.controller = Controller(self)
-        
         self.cor_verde = "#a4d65e"
         self.cor_branco = "#ffffff"
-        self.cor_cinza_claro = "#f0f0f0"
-        
+        self.cor_cinza_claro = "#f0f0f0"  
         self.criar_header()
-
         self.container_principal = ctk.CTkFrame(self.root, fg_color=self.cor_branco)
         self.container_principal.pack(fill="both", expand=True, padx=0, pady=0)
-        
         self.mostrar_tela_cadastro()
     
     def criar_header(self):
@@ -74,12 +69,12 @@ class View:
         form_frame = ctk.CTkFrame(frame_tela, fg_color=self.cor_branco)
         form_frame.pack(fill="both", expand=True)
         
-        label_nome = ctk.CTkLabel(form_frame, text="Nome Completo", 
+        label_nome = ctk.CTkLabel(form_frame, text="Nome completo", 
                                   font=("Arial", 14), text_color="gray")
         label_nome.grid(row=0, column=0, sticky="w", pady=(0, 5))
         
         self.entry_nome = ctk.CTkEntry(form_frame, width=400, height=35,
-                                       placeholder_text="Digite seu nome completo")
+                                       placeholder_text="Digite nome completo")
         self.entry_nome.grid(row=1, column=0, columnspan=2, sticky="w", pady=(0, 20))
         
         label_peso = ctk.CTkLabel(form_frame, text="Peso (kg)",
@@ -167,8 +162,6 @@ class View:
         self.entry_flex.delete(0, 'end')
         self.entry_abd.delete(0, 'end')
         self.entry_salto.delete(0, 'end')
-        
-        print("usuario cadastrado:", resultado)
     
     def mostrar_tela_perfis(self):
         self.limpar_container()
@@ -176,7 +169,7 @@ class View:
         frame_tela = ctk.CTkFrame(self.container_principal, fg_color=self.cor_branco)
         frame_tela.pack(fill="both", expand=True, padx=40, pady=30)
         
-        label_titulo = ctk.CTkLabel(frame_tela, text="Usuarios Cadastrados",
+        label_titulo = ctk.CTkLabel(frame_tela, text="Usuarios cadastrados",
                                     font=("Arial", 24, "bold"), text_color="black")
         label_titulo.pack(anchor="w", pady=(0, 30))
         
@@ -185,14 +178,9 @@ class View:
         scroll_frame.pack(fill="both", expand=True)
         
         usuarios = self.controller.listar_usuarios()
-        
-        if not usuarios:
-            label_vazio = ctk.CTkLabel(scroll_frame, text="Nenhum usuario cadastrado ainda.",
-                                       font=("Arial", 14), text_color="gray")
-            label_vazio.pack(pady=50)
-        else:
-            for usuario in usuarios:
-                self.criar_card_usuario(scroll_frame, usuario)
+    
+        for usuario in usuarios:
+            self.criar_card_usuario(scroll_frame, usuario)
     
     def criar_card_usuario(self, frame_pai, usuario):
         card = ctk.CTkFrame(frame_pai, fg_color=self.cor_cinza_claro,
@@ -222,7 +210,7 @@ class View:
         frame_botoes = ctk.CTkFrame(card, fg_color=self.cor_cinza_claro)
         frame_botoes.pack(side="right", padx=15)
         
-        btn_ver = ctk.CTkButton(frame_botoes, text="Ver Perfil",
+        btn_ver = ctk.CTkButton(frame_botoes, text="Ver perfil",
                                command=lambda: self.mostrar_perfil_individual(usuario),
                                fg_color=self.cor_verde,
                                hover_color="#8bc53f",
@@ -242,7 +230,7 @@ class View:
         frame_tela = ctk.CTkFrame(self.container_principal, fg_color=self.cor_branco)
         frame_tela.pack(fill="both", expand=True, padx=40, pady=30)
         
-        nome = usuario.get('nome', 'Usuário')
+        nome = usuario.get('nome', 'Usuario')
         label_titulo = ctk.CTkLabel(frame_tela, text="Perfil: " + nome,
                                     font=("Arial", 20, "bold"), text_color="black")
         label_titulo.pack(anchor="w", pady=(0, 20))
@@ -250,14 +238,14 @@ class View:
         frame_dados = ctk.CTkFrame(frame_tela, fg_color=self.cor_cinza_claro, corner_radius=10)
         frame_dados.pack(fill="x", pady=(0, 20))
         
-        label_secao1 = ctk.CTkLabel(frame_dados, text="Dados Pessoais",
+        label_secao1 = ctk.CTkLabel(frame_dados, text="Dados pessoais",
                                     font=("Arial", 14, "bold"), text_color="black")
         label_secao1.pack(anchor="w", padx=15, pady=(10, 5))
         
         imc = usuario.get('imc', 0)
         perfil = usuario.get('perfil', 'Desconhecido')
         
-        texto_dados = "IMC: " + str(imc) + "\nPerfil Atlético: " + perfil
+        texto_dados = "IMC: " + str(imc) + "\nPerfil atletico: " + perfil
         label_dados = ctk.CTkLabel(frame_dados, text=texto_dados,
                                    font=("Arial", 12), text_color="gray",
                                    justify="left")
@@ -266,7 +254,7 @@ class View:
         frame_fisicos = ctk.CTkFrame(frame_tela, fg_color=self.cor_cinza_claro, corner_radius=10)
         frame_fisicos.pack(fill="x", pady=(0, 20))
         
-        label_secao2 = ctk.CTkLabel(frame_fisicos, text="Dados Físicos",
+        label_secao2 = ctk.CTkLabel(frame_fisicos, text="Dados fisicos",
                                     font=("Arial", 14, "bold"), text_color="black")
         label_secao2.pack(anchor="w", padx=15, pady=(10, 5))
         
@@ -314,14 +302,10 @@ class View:
 
     def gerar_radar_chart(self, frame_pai, usuario):
         categorias, valores, angles = self.controller.get_dados_radar(usuario)
-
-        # plotagem do grafico
         fig, ax = plt.subplots(
             figsize=(5, 4), 
             subplot_kw=dict(projection='polar')
-        )
-        
-        # linha
+        )  
         ax.plot(
             angles, 
             valores, 
@@ -330,19 +314,15 @@ class View:
             linewidth=2,
             color=self.cor_verde
         )
-        
-        # preenchimento
         ax.fill(
             angles, 
             valores, 
             alpha=0.25,
             color=self.cor_verde
         )
-        # etiquetas
         ax.set_xticks(angles[:-1])
         ax.set_xticklabels(categorias)
         ax.set_ylim(0, max(valores) * 1.2) 
-    
         canvas = FigureCanvasTkAgg(fig, master=frame_pai)
         canvas.draw()
         canvas.get_tk_widget().pack(fill="both", expand=True)

@@ -1,6 +1,6 @@
 from elo import Elo
 
-# classificar em qual cluster o usuario se encaixa
+#  previsao de qual cluster o usuario se encaixa
 class Elo_02(Elo):
     def __init__(self, modelo_kmeans, scaler):
         super().__init__()
@@ -17,9 +17,6 @@ class Elo_02(Elo):
         ]]
         
         features_padronizadas = self.scaler.transform(features)
-        
         cluster = self.modelo.predict(features_padronizadas)[0]
-        
         data['cluster'] = int(cluster)
-        
         return data

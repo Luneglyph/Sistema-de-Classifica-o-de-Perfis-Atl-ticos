@@ -5,10 +5,10 @@ class Elo_04(Elo):
     def __init__(self):
         super().__init__()
         self.recomendacoes = {
-            "Força": "Powerlifting, Musculação",
+            "Força": "Powerlift, Musculaçao",
             "Resistente": "Escalada, Maratonas, Ciclismo",
             "Flexivel": "Pilates, Ginástica, Yoga",
-            "Atletico": "Corrida, Salto, Natação"
+            "Atletico": "Corrida, Salto, Nataçao"
         }
     
     def proc(self, data):
